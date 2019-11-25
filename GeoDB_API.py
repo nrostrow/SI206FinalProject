@@ -1,7 +1,8 @@
 import requests
 import json
 
-city_codes = ['Q60']
+#empty for now, you can test by adding 'Q60' (new york city)
+city_codes = []
 base_url = "https://wft-geo-db.p.rapidapi.com/v1/geo/cities/"
 headers = {
     'x-rapidapi-host': "wft-geo-db.p.rapidapi.com",
