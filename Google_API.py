@@ -1,6 +1,8 @@
 import requests 
 import json
 import re
+import sqlite3
+import os
 
 
 def get_Google_data(data):
@@ -36,10 +38,43 @@ def get_Google_data(data):
         lat_long_list.append(lon)
 
     return lat_long_list
+#Returns Latitude and Longitude
+
+
+def setUpDatabase(db_name):
+    path = os.path.dirname(os.path.abspath(__file__))
+    conn = sqlite3.connect(path+'/'+db_name)
+    cur = conn.cursor()
+    return cur, conn
+# Function to set up the main database, called final.db
+
+def setUpCityLatDatabase(city, lat_and_long, cur, conn):
+    city_list = []
+    lat_li = []
+    long_li = []
+
+    cur.execute("DROP TABLE IF EXISTS Locations")
+    cur.execute("CREATE TABLE Locations (Rest_address TEXT, Latitude REAL, Longitude REAL)") #make address primary key
+
+    for i in city:
+        city_list.append(i)
+    for i in lat_and_long:
+        lat_li.append(i)
+        long_li.append(i)
+
+    for i in range(len(city_list)):
+        cur.execute("INSERT INTO Locations (Rest_address, Latitude, Longitude) VALUES (?,?,?)",(city_list[i], lat_li[i], long_li[i]))
+    conn.commit()
+#sets up a database
 
 def main():
-    data = "644 Selden hi St Detroit, MI 48201"
-    get_Google_data(data)
+    cur, conn = setUpDatabase('Lat&Long.db')
+    city_list = ['Detroit', 'Atlanta']
+    
+    for i in city_list:
+        get_Google_data(i)
+        setUpCityLatDatabase(city, i, cur, conn)
+
 
 if __name__ == "__main__":
     main()
