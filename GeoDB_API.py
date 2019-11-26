@@ -19,9 +19,14 @@ headers = {
     'x-rapidapi-key': "e9557b3be3msh2ca132a52dbbc5bp1e9aacjsna6acb3f99a0d"
 }
 
+results = []
+
 for code in city_codes:
     url = base_url + code
     response = requests.request("GET", url, headers=headers)
     data = json.loads(response.text)
     info = (data['data']['name'], data['data']['elevationMeters'], data['data']['population'], data['data']['timezone'])
-    print(info)
+    results.append(info)
+
+for item in results:
+    print(item)
