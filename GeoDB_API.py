@@ -30,3 +30,7 @@ for code in city_codes:
 
 for item in results:
     print(item)
+
+# 2 tables
+# table 1: key = city name, column(s) = population
+# table 2: key = city name, column(s) = elevationMeters, timezone
