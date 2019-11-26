@@ -73,7 +73,7 @@ def main():
     
     for i in city_list:
         get_Google_data(i)
-        setUpCityLatDatabase(city, i, cur, conn)
+        setUpCityLatDatabase(city_list, i, cur, conn)
 
 
 if __name__ == "__main__":
