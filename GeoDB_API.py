@@ -1,5 +1,7 @@
 import requests
 import json
+import os
+import sqlite3
 
 def get_data(round):
     city_codes1 = ['Q60', 'Q65', 'Q1297', 'Q16555', 'Q1345', 'Q16556', 'Q975', 'Q16552', 'Q16557', 'Q16553', 'Q16559', 'Q16568', 'Q62', 'Q6346', 'Q16567', 'Q16558', 'Q16565', 'Q5083', 'Q16554', 'Q16562']
@@ -34,8 +36,24 @@ def get_data(round):
 # 2 tables
 # table 1: key = city name, column(s) = population
 # table 2: key = city name, column(s) = elevationMeters, timezone
-def create_tables():
-    pass
+def connect_db(filename):
+    path = os.path.dirname(os.path.abspath(__file__))
+    conn = sqlite3.connect(path+'/'+filename)
+    cur = conn.cursor()
+    return cur, conn
 
-def populate_tables():
-    pass
+def create_table1(data, cur, conn):
+    cur.execute("DROP TABLE IF EXISTS CityPop")
+    cur.execute("CREATE TABLE CityPop (city_name TEXT PRIMARY KEY, population INTEGER)")
+    for item in data:
+        cur.execute("INSERT INTO CityPop (city_name, population) VALUES (?,?)",(item[0],item[2]))
+    conn.commit()
+
+def create_table2(data, cur, conn):
+    cur.execute("DROP TABLE IF EXISTS CityInfo")
+    cur.execute("CREATE TABLE CityInfo (city_name TEXT PRIMARY KEY, elevation INTEGER, timezone TEXT)")
+    for item in data:
+        cur.execute("INSERT INTO CityInfo (city_name, elevation, timezone) VALUES (?,?,?)",(item[0],item[1],item[3]))
+    conn.commit()
+    
+cur, conn = connect_db('cities.db')
