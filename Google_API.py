@@ -36,7 +36,7 @@ def get_Google_data(data):
         lat_long_list.append(lat)
         lon = result["geometry"]['location']['lng']
         lat_long_list.append(lon)
-
+    
     return lat_long_list
 #Returns Latitude and Longitude
 
@@ -49,42 +49,36 @@ def setUpDatabase(db_name):
 # Function to set up the main database, called final.db
 
 def setUpCityLatDatabase(address, lat_and_long, cur, conn):
-    address_list = []
-    lat_li = []
-    long_li = []
-
-    cur.execute("DROP TABLE IF EXISTS Latitude")
-    cur.execute("CREATE TABLE Latitude (Rest_address TEXT PRIMARY KEY, Latitude REAL)") 
-    #Creates first table for API, with the address and latitude
-
-    cur.execute("DROP TABLE IF EXISTS Longitude")
-    cur.execute("CREATE TABLE Longitude (Rest_address TEXT PRIMARY KEY, Longitude REAL)") 
-    #Creates second table for API, with the address and longitude
-
-    for i in address:
-        address_list.append(i)
-    
-    for i in lat_and_long:
-        lat = i[0]
-        lat_li.append(lat)
-        #appends first element of the list lat_and_long
-        lon = i[1]
-        long_li.append(lon)
-        #appends second element of the list lat_and_long
-    for i in range(len(address_list)):
-        cur.execute("INSERT INTO Latitude (Rest_address, Latitude) VALUES (?,?)",(address_list[i], lat_li[i]))
+    lat = lat_and_long[0]
+    #lat_li.append(lat)
+    #appends first element of the list lat_and_long
+    lon = lat_and_long[1]
+    #long_li.append(lon)
+    #appends second element of the list lat_and_long
+        
+    cur.execute("INSERT INTO Latitude (Address, Latitude) VALUES (?,?)",(address, lat))
         #Inserts data into the Latitude table
-        cur.execute("INSERT INTO Latitude (Rest_address, Latitude) VALUES (?,?)",(address_list[i], lat_li[i]))
+    cur.execute("INSERT INTO Longitude (Address, Longitude) VALUES (?,?)",(address, lon))
     conn.commit()
 #sets up a database
 
 def main():
     cur, conn = setUpDatabase('Lat&Long.db')
-    city_list = ['Detroit', 'Atlanta']
+
+    cur.execute("DROP TABLE IF EXISTS Latitude")
+    cur.execute("CREATE TABLE Latitude (Address TEXT PRIMARY KEY, Latitude REAL)") 
+    #Creates first table for API, with the address and latitude
+
+    cur.execute("DROP TABLE IF EXISTS Longitude")
+    cur.execute("CREATE TABLE Longitude (Address TEXT PRIMARY KEY, Longitude REAL)") 
+    #Creates second table for API, with the address and longitude
+
+    address_list = ['12025 Brandywine Drive Brighton, MI', '800 Fuller St AnnArbor, MI']
     
-    for i in city_list:
-        get_Google_data(i)
-        setUpCityLatDatabase(city_list, i, cur, conn)
+    for i in address_list:
+        lat_and_long = get_Google_data(i)
+
+        setUpCityLatDatabase(i, lat_and_long, cur, conn)
 
 
 if __name__ == "__main__":
