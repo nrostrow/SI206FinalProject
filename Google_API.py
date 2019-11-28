@@ -48,22 +48,33 @@ def setUpDatabase(db_name):
     return cur, conn
 # Function to set up the main database, called final.db
 
-def setUpCityLatDatabase(city, lat_and_long, cur, conn):
-    city_list = []
+def setUpCityLatDatabase(address, lat_and_long, cur, conn):
+    address_list = []
     lat_li = []
     long_li = []
 
-    cur.execute("DROP TABLE IF EXISTS Locations")
-    cur.execute("CREATE TABLE Locations (Rest_address TEXT, Latitude REAL, Longitude REAL)") #make address primary key
+    cur.execute("DROP TABLE IF EXISTS Latitude")
+    cur.execute("CREATE TABLE Latitude (Rest_address TEXT PRIMARY KEY, Latitude REAL)") 
+    #Creates first table for API, with the address and latitude
 
-    for i in city:
-        city_list.append(i)
+    cur.execute("DROP TABLE IF EXISTS Longitude")
+    cur.execute("CREATE TABLE Longitude (Rest_address TEXT PRIMARY KEY, Longitude REAL)") 
+    #Creates second table for API, with the address and longitude
+
+    for i in address:
+        address_list.append(i)
+    
     for i in lat_and_long:
-        lat_li.append(i)
-        long_li.append(i)
-
-    for i in range(len(city_list)):
-        cur.execute("INSERT INTO Locations (Rest_address, Latitude, Longitude) VALUES (?,?,?)",(city_list[i], lat_li[i], long_li[i]))
+        lat = i[0]
+        lat_li.append(lat)
+        #appends first element of the list lat_and_long
+        lon = i[1]
+        long_li.append(lon)
+        #appends second element of the list lat_and_long
+    for i in range(len(address_list)):
+        cur.execute("INSERT INTO Latitude (Rest_address, Latitude) VALUES (?,?)",(address_list[i], lat_li[i]))
+        #Inserts data into the Latitude table
+        cur.execute("INSERT INTO Latitude (Rest_address, Latitude) VALUES (?,?)",(address_list[i], lat_li[i]))
     conn.commit()
 #sets up a database
 
