@@ -65,12 +65,10 @@ def setUpCityLatDatabase(address, lat_and_long, cur, conn):
 def main():
     cur, conn = setUpDatabase('Lat&Long.db')
 
-    cur.execute("DROP TABLE IF EXISTS Latitude")
-    cur.execute("CREATE TABLE Latitude (Address TEXT PRIMARY KEY, Latitude REAL)") 
+    cur.execute("CREATE TABLE IF NOT EXISTS Latitude (Address TEXT PRIMARY KEY, Latitude REAL)") 
     #Creates first table for API, with the address and latitude
 
-    cur.execute("DROP TABLE IF EXISTS Longitude")
-    cur.execute("CREATE TABLE Longitude (Address TEXT PRIMARY KEY, Longitude REAL)") 
+    cur.execute("CREATE TABLE IF NOT EXISTS Longitude (Address TEXT PRIMARY KEY, Longitude REAL)") 
     #Creates second table for API, with the address and longitude
 
     address_list = ['12025 Brandywine Drive Brighton, MI', '800 Fuller St AnnArbor, MI']
