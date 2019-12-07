@@ -14,10 +14,10 @@ def Reviews(api_key):
     print('the status code is {}'.format(req.status_code))
     print(json.loads(req.text))
 
-def location(api_key):
+def location(api_key, city):
     headers = {'Authorization': 'Bearer %s' % api_key}
     url='https://api.yelp.com/v3/businesses/search'
-    params={'term':'restaurant', 'location': 'Detroit' }
+    params={'term':'restaurant', 'location': city }
     req = requests.get(url, params=params, headers=headers)
     parsed = json.loads(req.text)
     return parsed
@@ -73,12 +73,14 @@ def Yelp_data_populate(data, cur, conn):
         reviewcount_list.append(reviews)
 
     for i in range(len(city_list)):
-        cur.execute("INSERT INTO Yelp (restaurant_id ,name, city, phone_num, rating, reviews) VALUES (?,?,?,?,?,?)",(id_list[i],name_list[i],city_list[i],phone_list[i],rating_list[i],reviewcount_list[i]))
-        cur.execute("INSERT INTO YelpAddress (restaurant_id, address, city, zipcode) VALUES (?,?,?,?)",(id_list[i],address_list[i],city_list[i],zipcode_list[i]))
-
+        try:
+            cur.execute("INSERT INTO Yelp (restaurant_id ,name, city, phone_num, rating, reviews) VALUES (?,?,?,?,?,?)",(id_list[i],name_list[i],city_list[i],phone_list[i],rating_list[i],reviewcount_list[i]))
+            cur.execute("INSERT INTO YelpAddress (restaurant_id, address, city, zipcode) VALUES (?,?,?,?)",(id_list[i],address_list[i],city_list[i],zipcode_list[i]))
+        except:
+            print(name_list[i], city_list[i])
     conn.commit()
 
-def Yelp_data_setup(data, cur, conn):
+def Yelp_data_setup(cur, conn):
     cur.execute("DROP TABLE IF EXISTS Yelp")
     cur.execute("DROP TABLE IF EXISTS YelpAddress")
     
@@ -86,11 +88,14 @@ def Yelp_data_setup(data, cur, conn):
     cur.execute("CREATE TABLE YelpAddress(restaurant_id TEXT PRIMARY KEY, address TEXT, city TEXT, zipcode TEXT)")
     conn.commit()
 
-def create_database(data, cur, conn):
-    Yelp_data_setup(location(api_key), cur, conn)
+def create_database(cur, conn):
+    Yelp_data_setup(cur, conn)
+
 
 cur_yelp, conn_yelp = Database_builder('yelp.db')
 cur_cities, conn_cities = Database_builder('cities.db')
-#create_database(location(api_key), cur_yelp, conn_yelp)
+cities = City_list_creator(cur_cities, conn_cities)
+# create_database(cur_yelp, conn_yelp)
+for city in cities:
+    Yelp_data_populate(location(api_key, city), cur_yelp, conn_yelp)
 #Yelp_data_populate(location(api_key), cur_yelp, conn_yelp)
-City_list_creator(cur_cities, conn_cities)
