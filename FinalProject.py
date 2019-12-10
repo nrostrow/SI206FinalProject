@@ -197,31 +197,22 @@ def handle_yelp(cur, conn):
     cities = get_city_list(cur, conn)
     if round == 1:
         create_yelp(cur, conn)
-    # city = cities[round - 1]
-    # restaurants = get_yelp_data(api_key, city)
-    # insert_yelp(restaurants, cur, conn)
-    for city in cities:
-        time.sleep(5)
-        restaurants = get_yelp_data(api_key, city)
-        insert_yelp(restaurants, cur, conn)
+    city = cities[round - 1]
+    restaurants = get_yelp_data(api_key, city)
+    insert_yelp(restaurants, cur, conn)
 
 def handle_google(cur, conn):
     round = int(input("Enter data round number (1-100): "))
     restaurants = get_restaurants_list(cur, conn)
     if round == 1:
         create_google(cur, conn)
-    # round_start = 10 * (round - 1)
-    # round_end = 10 * round
-    # restaurants = restaurants[round_start:round_end]
-    count = 0
+    round_start = 10 * (round - 1)
+    round_end = 10 * round
+    restaurants = restaurants[round_start:round_end]
     for restaurant in restaurants:
-        count += 1
         lat_long = get_google_data(restaurant)
         insert_lat(restaurant, lat_long, cur, conn)
         insert_long(restaurant, lat_long, cur, conn)
-        if count == 10:
-            count = 0
-            time.sleep(5)
 
 def handle_clear(cur, conn):
     create_citypop(cur, conn)
@@ -231,7 +222,7 @@ def handle_clear(cur, conn):
 
 def main():
     phase = input("Enter phase: ")
-    cur, conn = connect_db('data.db')
+    cur, conn = connect_db('data_test.db')
     if phase == "GeoDB":
         handle_cities(cur, conn)
     if phase == "Yelp":
