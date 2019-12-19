@@ -4,6 +4,8 @@ import os
 import sqlite3
 import time
 
+from PlotVisualizations import visualize
+
 def get_city_data(round, cur, conn):
     codes1 = ['Q60', 'Q65', 'Q1297', 'Q16555', 'Q1345', 'Q16556', 'Q975', 'Q16552', 'Q16557', 'Q16553']
     codes2 = ['Q16559', 'Q16568', 'Q62', 'Q6346', 'Q16567', 'Q16558', 'Q16565', 'Q5083', 'Q16554', 'Q16562']
@@ -97,7 +99,7 @@ def create_google(cur, conn):
 def create_yelp(cur, conn):
     cur.execute("DROP TABLE IF EXISTS Yelp")
     cur.execute("DROP TABLE IF EXISTS YelpAddress")
-    cur.execute("CREATE TABLE Yelp (restaurant_id TEXT PRIMARY KEY,name TEXT, phone_num TEXT, rating REAL, reviews INTEGER)")
+    cur.execute("CREATE TABLE Yelp (restaurant_id TEXT PRIMARY KEY, name TEXT, phone_num TEXT, rating REAL, reviews INTEGER)")
     cur.execute("CREATE TABLE YelpAddress (restaurant_id TEXT PRIMARY KEY, address TEXT, city TEXT, zipcode TEXT, state TEXT)")
     conn.commit()
 
@@ -220,9 +222,12 @@ def handle_clear(cur, conn):
     create_yelp(cur, conn)
     create_google(cur, conn)
 
+def handle_visualize():
+    visualize()
+
 def main():
     phase = input("Enter phase: ")
-    cur, conn = connect_db('data_test.db')
+    cur, conn = connect_db('data.db')
     if phase == "GeoDB":
         handle_cities(cur, conn)
     if phase == "Yelp":
@@ -231,6 +236,8 @@ def main():
         handle_google(cur, conn)
     if phase == "Clear":
         handle_clear(cur, conn)
+    if phase == "Visualize":
+        handle_visualize()
 
 if __name__ == "__main__":
     main()

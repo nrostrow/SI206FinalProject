@@ -17,7 +17,7 @@ def plot_population_elevation(cur, conn):
     for row in rows:
         elevations.append(row[0])
         populations.append(row[1])
-    plt.scatter(elevations, populations, color='red')
+    plt.scatter(elevations, populations, color='green')
     plt.xlabel('Elevation (M)')
     plt.ylabel('Population')
     plt.title('City Elevation vs Population')
@@ -102,11 +102,8 @@ def plot_lat_long(cur, conn):
     plt.ylabel('Latitude')
     plt.title('Latitude and Longitude of Restaurants in US Cities')
     plt.savefig("lat_long.png", bbox_inches = 'tight')
-
-
-
    
-def main():
+def visualize():
     cur, conn = connect_db('data.db')
     plot_population_elevation(cur, conn)
     plt.clf()
@@ -117,4 +114,4 @@ def main():
     plot_lat_long(cur,conn)
 
 if __name__ == "__main__":
-    main()
+    visualize()
