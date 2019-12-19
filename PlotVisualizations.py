@@ -35,7 +35,7 @@ def plot_city_review(cur, conn):
     rows = cur.fetchall()
     for row in rows:
         temp_cities.append(row[0])
-    cur.execute("SELECT city, reviews FROM Yelp")
+    cur.execute("SELECT city, reviews FROM Yelp INNER JOIN YelpAddress on Yelp.restaurant_id = YelpAddress.restaurant_id")
     rows = cur.fetchall()
     for row in rows:
         store[row[0]] = store.get(row[0], 0) + int(row[1])
@@ -65,7 +65,7 @@ def plot_average_city_rating(cur, conn):
     rows = cur.fetchall()
     for row in rows:
         temp_cities.append(row[0])
-    cur.execute("SELECT city, rating FROM Yelp")
+    cur.execute("SELECT city, rating FROM Yelp INNER JOIN YelpAddress on Yelp.restaurant_id = YelpAddress.restaurant_id")
     rows = cur.fetchall()
     for row in rows:
         store[row[0]] = store.get(row[0], []) + [(int(row[1]))]
@@ -103,6 +103,9 @@ def plot_lat_long(cur, conn):
     plt.title('Latitude and Longitude of Restaurants in US Cities')
     plt.savefig("lat_long.png", bbox_inches = 'tight')
 
+
+
+   
 def main():
     cur, conn = connect_db('data.db')
     plot_population_elevation(cur, conn)

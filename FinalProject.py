@@ -97,7 +97,7 @@ def create_google(cur, conn):
 def create_yelp(cur, conn):
     cur.execute("DROP TABLE IF EXISTS Yelp")
     cur.execute("DROP TABLE IF EXISTS YelpAddress")
-    cur.execute("CREATE TABLE Yelp (restaurant_id TEXT PRIMARY KEY,name TEXT, city TEXT, phone_num TEXT, rating REAL, reviews INTEGER)")
+    cur.execute("CREATE TABLE Yelp (restaurant_id TEXT PRIMARY KEY,name TEXT, phone_num TEXT, rating REAL, reviews INTEGER)")
     cur.execute("CREATE TABLE YelpAddress (restaurant_id TEXT PRIMARY KEY, address TEXT, city TEXT, zipcode TEXT, state TEXT)")
     conn.commit()
 
@@ -166,7 +166,7 @@ def insert_yelp(data, cur, conn):
 
     for i in range(len(city_list)):
         try:
-            cur.execute("INSERT INTO Yelp (restaurant_id ,name, city, phone_num, rating, reviews) VALUES (?,?,?,?,?,?)",(id_list[i],name_list[i],city_list[i], phone_list[i],rating_list[i],reviewcount_list[i]))
+            cur.execute("INSERT INTO Yelp (restaurant_id ,name, phone_num, rating, reviews) VALUES (?,?,?,?,?)",(id_list[i],name_list[i], phone_list[i],rating_list[i],reviewcount_list[i]))
             cur.execute("INSERT INTO YelpAddress (restaurant_id, address, city, zipcode, state) VALUES (?,?,?,?,?)",(id_list[i],address_list[i],city_list[i],zipcode_list[i], state_list[i]))
         except:
             print(name_list[i], city_list[i])
