@@ -50,7 +50,7 @@ def get_yelp_data(api_key, city):
 
 def get_google_data(data):
     lat_long_list = []
-    api_key = 'AIzaSyAg9jsCeHF3VjdMJqEAuT90fpArAXQZld4'
+    api_key = ''
     base_url = 'https://maps.googleapis.com/maps/api/geocode/json?address={},{},{}&key={}'
     street = data[1]
     city = data[2]
